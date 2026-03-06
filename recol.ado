@@ -91,21 +91,10 @@ program recol
 		else {
 			// make sure the format matches expectations
 			// strings and dates have already been handled, so this should work
-			assert regexm("`fmt'", "%([0-9]+)\.([0-9]+)([fgc]+)")
+			assert regexm("`fmt'", "%-?([0-9]+)\.([0-9]+)([fgce]+)")
 
-			// pieces of regex match
-			local main_width = regexs(1)
-			local decimal = regexs(2)
-			local fmt_details = regexs(3)
-
-			// if no decimal value
-			if `decimal' == 0 {
-				local contents = `main_width'
-			}
-			// if decimal value
-			else {
-				local contents = `main_width'
-			}
+			// total display width is already encoded in the format
+			local contents = regexs(1)
 		}
 
 		// if contents are longer, use that
@@ -129,6 +118,9 @@ program recol
 		// print progress
 		di as text "Width set to " as result "`new_width'" as text _col(18) ": " as result "`v'"
 	}
+
+	// clean up mata temporaries
+	capture mata: mata drop len_vec max_len
 
 	// optional compress
 	if "`compress'" != "" {
